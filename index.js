@@ -7,44 +7,55 @@ const mdLinks = (file) => {
       if (errFile) {
         reject(errFile.message);
       } else if (stats.isDirectory()) {
-        fs.readdir(file, 'utf-8', (errDir, files) => {
-          if (!errDir) {
-            let arrayMdlinks = files.map((archive) => {
-              return mdLinks(`${file}\\${archive}`);
-            })
-            Promise.all(arrayMdlinks).then((objectList) => {
-              const list = objectList.flat();
-              resolve(list);
-            })
-          } else {
-            console.log(errDir.message)
-          }
-        });
+        resolveDirectory(file, resolve, reject);
       } else {
-        fs.readFile(file, 'utf8', (errReadFile, data) => {
-          let arrayLinks = [];
-          if (errReadFile) {
-            console.log(errReadFile.message);
-          } else if (path.extname(file) === '.md') {
-            const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
-            let firstFilter = data.match(regexMdLinks);
-            if (firstFilter) {
-              firstFilter.forEach((textAndLink) => {
-                let verifyBreakLine = textAndLink.replace(/(\r\n|\n|\r)/, '')
-                const text = verifyBreakLine.match(/\[([^\]]*)\]/)[1];
-                const href = verifyBreakLine.match(/\]\(([^\)]*)\)/)[1];
-                arrayLinks.push({ text, href, file });
-              });
-            }
-          }
-          resolve(arrayLinks);
-        });
+        resolveFile(file, resolve, reject);
       }
     });
   });
 }
 
-module.exports = mdLinks
-// mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado').then((links) => {
-//   console.log(links);
-// })
+const resolveDirectory = (file, resolve, reject) => {
+  fs.readdir(file, 'utf-8', (errDir, files) => {
+    if (!errDir) {
+      let arrayMdlinks = files.map((archive) => {
+        return mdLinks(`${file}\\${archive}`);
+      })
+      Promise.all(arrayMdlinks).then((objectList) => {
+        const list = objectList.flat();
+        resolve(list);
+      })
+    } else {
+      reject(errDir.message)
+    }
+  });
+}
+
+const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
+
+const resolveFile = (file, resolve, reject) => {
+  fs.readFile(file, 'utf8', (errReadFile, data) => {
+    let arrayLinks = [];
+    if (errReadFile) {
+      reject(errReadFile.message);
+    } else if (path.extname(file) === '.md') {
+      let filterRegex = data.match(regexMdLinks);
+      if (filterRegex) {
+        filterRegex.forEach((textAndLink) => {
+          let verifyBreakLine = textAndLink.replace(/(\r\n|\n|\r)/, '')
+          const text = verifyBreakLine.match(/\[([^\]]*)\]/)[1];
+          const href = verifyBreakLine.match(/\]\(([^\)]*)\)/)[1];
+          arrayLinks.push({ text, href, file });
+          console.log('oi');
+        });
+      }
+    }
+    resolve(arrayLinks);
+  });
+}
+// module.exports = mdLinks;
+
+mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
+.then((links) => {
+  console.log(links);
+})
