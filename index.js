@@ -1,21 +1,20 @@
 const fs = require('fs');
 const path = require('path');
-const { resolve } = require('path');
 
 const mdLinks = (file) => {
   return new Promise((resolve, reject) => {
-    let arrayLinks = [];
     fs.stat(file, (errFile, stats) => {
       if (errFile) {
         reject(errFile.message);
       } else if (stats.isDirectory()) {
         fs.readdir(file, 'utf-8', (errDir, files) => {
           if (!errDir) {
-            files.forEach((archive) => {
-              const verifyDot = archive.match(/^\w[^\s]*/);
-              if (verifyDot) {
-                mdLinks(`${file}\\${verifyDot[0]}`)
-              }
+            let arrayMdlinks = files.map((archive) => {
+              return mdLinks(`${file}\\${archive}`);
+            })
+            Promise.all(arrayMdlinks).then((objectList) => {
+              const list = objectList.flat();
+              resolve(list);
             })
           } else {
             console.log(errDir.message)
@@ -23,26 +22,29 @@ const mdLinks = (file) => {
         });
       } else {
         fs.readFile(file, 'utf8', (errReadFile, data) => {
+          let arrayLinks = [];
           if (errReadFile) {
             console.log(errReadFile.message);
           } else if (path.extname(file) === '.md') {
             const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
             let firstFilter = data.match(regexMdLinks);
-            firstFilter.forEach((textAndLink) => {
-              let verifyBreakLine = textAndLink.replace(/(\r\n|\n|\r)/, '')
-              const text = verifyBreakLine.match(/\[([^\]]*)\]/)[1];
-              const href = verifyBreakLine.match(/\]\(([^\)]*)\)/)[1];
-              arrayLinks.push({ text, href, file });
-            });
-            // console.log(arrayLinks);
-            console.log(resolve(arrayLinks))
-            return arrayLinks
+            if (firstFilter) {
+              firstFilter.forEach((textAndLink) => {
+                let verifyBreakLine = textAndLink.replace(/(\r\n|\n|\r)/, '')
+                const text = verifyBreakLine.match(/\[([^\]]*)\]/)[1];
+                const href = verifyBreakLine.match(/\]\(([^\)]*)\)/)[1];
+                arrayLinks.push({ text, href, file });
+              });
+            }
           }
+          resolve(arrayLinks);
         });
       }
     });
   });
 }
 
-// module.exports = mdLinks
-mdLinks('c:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Laboratoria efetivo\\SAP004-md-links')
+module.exports = mdLinks
+// mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado').then((links) => {
+//   console.log(links);
+// })
