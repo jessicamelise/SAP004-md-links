@@ -80,10 +80,16 @@ const validateLink = (objLink) => {
       https.get(objLink.href, (res) => {
         objLink.validate = { code: res.statusCode, message: res.statusMessage };
         resolve(objLink);
+      }).on('error', (err) => {
+        objLink.validate = (`Got error: ${err.code}`);
+        resolve(objLink);
       });
     } else if (objLink.href.indexOf('http') === 0) {
       http.get(objLink.href, (res) => {
         objLink.validate = { code: res.statusCode, message: res.statusMessage };
+        resolve(objLink);
+      }).on('error', (err) => {
+        objLink.validate = (`Got error: ${err.code}`);
         resolve(objLink);
       });
     } else {
