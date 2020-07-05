@@ -4,24 +4,29 @@ const http = require('http');
 const https = require('https');
 
 const mdLinks = (file, options) => {
+  // let o = {
+  //   validade: false,
+  //   stats: false,
+  // };
+  // Object.assign(o,options)
   return new Promise((resolve, reject) => {
     fs.stat(file, (errFile, stats) => {
       if (errFile) {
         reject(errFile.message);
       } else if (stats.isDirectory()) {
-        resolveDirectory(file, resolve, reject);
+        resolveDirectory(file, options, resolve, reject);
       } else {
-        resolveFile(file, resolve, reject);
+        resolveFile(file, options, resolve, reject);
       }
     });
   });
 }
 
-const resolveDirectory = (file, resolve, reject) => {
+const resolveDirectory = (file, options, resolve, reject) => {
   fs.readdir(file, 'utf-8', (errDir, files) => {
     if (!errDir) {
       let arrayMdlinks = files.map((archive) => {
-        return mdLinks(`${file}\\${archive}`);
+        return mdLinks(`${file}\\${archive}`, options);
       })
       Promise.all(arrayMdlinks).then((objectList) => {
         const list = objectList.flat();
@@ -35,7 +40,7 @@ const resolveDirectory = (file, resolve, reject) => {
 
 const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
 
-const resolveFile = (file, resolve, reject) => {
+const resolveFile = (file, options, resolve, reject) => {
   fs.readFile(file, 'utf8', (errReadFile, data) => {
     let arrayLinks = [];
     if (errReadFile) {
@@ -48,48 +53,49 @@ const resolveFile = (file, resolve, reject) => {
           const text = verifyBreakLine.match(/\[([^\]]*)\]/)[1];
           const href = verifyBreakLine.match(/\]\(([^\)]*)\)/)[1];
           arrayLinks.push({ text, href, file });
-          console.log('oi');
         });
+        if (options && options.validate) {
+          let teste = arrayLinks.map((item) => {
+            return validateLink(item)
+          })
+          Promise.all(teste).then((t) => {
+            resolve(t);
+          })
+          return;
+        }
       }
     }
     resolve(arrayLinks);
   });
 }
 
-const validateLink = (link) => {
-  let objValidate = {};
-   if (link.indexOf('https') === 0) {
-    https.get(link, (res) => {
-      const code = res.statusCode;
-      const message = res.statusMessage;
-      console.log(code, message);
-      objValidate = {code, message}
-      console.log(objValidate);
-      return objValidate;
-    })
-  } else if (link.indexOf('http') === 0) {
-    http.get(link, (res) => {
-      const code = res.statusCode;
-      const message = res.statusMessage;
-      console.log(code, message);
-      objValidate = {code, message}
-      console.log(objValidate);
-      return objValidate;
-    })
-  } else {
-    const message = 'invalid format'
-    console.log(message);
-    objValidate = {message}
-    console.log(objValidate);
-    return objValidate;
-  }
-
+const validateLink = (objLink) => {
+  return new Promise((resolve) => {
+    if (objLink.href.indexOf('https') === 0) {
+      https.get(objLink.href, (res) => {
+        const code = res.statusCode;
+        const message = res.statusMessage;
+        objLink.validate = { code, message };
+        resolve(objLink);
+      })
+    } else if (objLink.href.indexOf('http') === 0) {
+      http.get(objLink.href, (res) => {
+        const code = res.statusCode;
+        const message = res.statusMessage;
+        objLink.validate = { code, message };
+        resolve(objLink);
+      })
+    } else {
+      const message = 'invalid format';
+      objLink.validate = { message };
+      resolve(objLink);
+    }
+  })
 }
 
-validateLink('#google')
 // module.exports = mdLinks;
 
-// mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
-// .then((links) => {
-//   console.log(links);
-// })
+mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado', {validate:true})
+  .then((links) => {
+    console.log(links);
+  })
