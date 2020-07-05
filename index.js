@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
+const https = require('https');
 
-const mdLinks = (file) => {
+const mdLinks = (file, options) => {
   return new Promise((resolve, reject) => {
     fs.stat(file, (errFile, stats) => {
       if (errFile) {
@@ -53,9 +55,41 @@ const resolveFile = (file, resolve, reject) => {
     resolve(arrayLinks);
   });
 }
+
+const validateLink = (link) => {
+  let objValidate = {};
+   if (link.indexOf('https') === 0) {
+    https.get(link, (res) => {
+      const code = res.statusCode;
+      const message = res.statusMessage;
+      console.log(code, message);
+      objValidate = {code, message}
+      console.log(objValidate);
+      return objValidate;
+    })
+  } else if (link.indexOf('http') === 0) {
+    http.get(link, (res) => {
+      const code = res.statusCode;
+      const message = res.statusMessage;
+      console.log(code, message);
+      objValidate = {code, message}
+      console.log(objValidate);
+      return objValidate;
+    })
+  } else {
+    const message = 'invalid format'
+    console.log(message);
+    objValidate = {message}
+    console.log(objValidate);
+    return objValidate;
+  }
+
+}
+
+validateLink('#google')
 // module.exports = mdLinks;
 
-mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
-.then((links) => {
-  console.log(links);
-})
+// mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
+// .then((links) => {
+//   console.log(links);
+// })
