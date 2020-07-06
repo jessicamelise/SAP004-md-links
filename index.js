@@ -6,6 +6,18 @@ const https = require('https');
 const mdLinks = (file, options) => {
   let op = { validade: false, stats: false };
   Object.assign(op, options);
+  return new Promise ((resolve, reject) => {
+    try {
+      getAllLinks(file, op).then((allLinks) => {
+        resolve(allLinks);
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
+const getAllLinks = (file, op) => {
   return new Promise((resolve, reject) => {
     fs.stat(file, (errFile, stats) => {
       if (errFile) {
@@ -23,7 +35,7 @@ const resolveDirectory = (file, op, resolve, reject) => {
   fs.readdir(file, 'utf-8', (errDir, files) => {
     if (!errDir) {
       let arrayMdlinks = files.map((archive) => {
-        return mdLinks(`${file}\\${archive}`, op);
+        return getAllLinks(`${file}\\${archive}`, op);
       })
       Promise.all(arrayMdlinks).then((objectList) => {
         const list = objectList.flat();
