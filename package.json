@@ -1,4 +1,28 @@
 {
   "name": "md-links",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "description": "Biblioteca que irá retornar todos os links dentro de um arquivo tipo .md",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npm run eslint && jest --verbose --coverage",
+    "eslint": "eslint --ext .js test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jessicamelise/SAP004-md-links.git"
+  },
+  "keywords": [
+    "biblioteca",
+    "markdown"
+  ],
+  "author": "Jéssica Melise de Mendonça",
+  "license": "ISC",
+  "homepage": "https://github.com/jessicamelise/SAP004-md-links#readme",
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "jest": "^26.1.0"
+  }
 }
