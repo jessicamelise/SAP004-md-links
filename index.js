@@ -41,7 +41,7 @@ const resolveDirectory = (file, op, resolve, reject) => {
   fs.readdir(file, 'utf-8', (errDir, files) => {
     if (!errDir) {
       let arrayMdlinks = files.map((archive) => {
-        return getAllLinks(`${file}\\${archive}`, op);
+        return getAllLinks(`${file}/${archive}`, op);
       })
       Promise.all(arrayMdlinks).then((objectList) => {
         const list = objectList.flat();
@@ -142,29 +142,32 @@ const findDuplicateLinks = (arrayLinks) => {
 
 const statsWithOrWithoutValidate = (arrayWithAllLinks, op, resolve) => {
   if (op.validate) {
-    let totalWithStatsAndValidate = '';
-    let resultArray = arrayWithAllLinks.map((eachObjLink) => {
-      return validateLink(eachObjLink);
-    });
-    Promise.all(resultArray).then((links) => {
-      let brokenCodes = []
-      links.forEach((validate) => {
-        let getCodes = validate.validate.code;
-        if (getCodes === undefined || getCodes >= 400 && getCodes <= 599) {
-          brokenCodes.push(getCodes);
-        }
-      });
-      totalWithStatsAndValidate = optionStats(arrayWithAllLinks, brokenCodes.length)
-      resolve(totalWithStatsAndValidate);
-    });
-    return totalWithStatsAndValidate;
+    return optionValidadeWithStats(arrayWithAllLinks, resolve);
   }
   resolve(optionStats(arrayWithAllLinks))
 }
 
+const optionValidadeWithStats = (array, resolve) => {
+  let totalWithStatsAndValidate = '';
+  let resultArray = array.map((eachObjLink) => {
+    return validateLink(eachObjLink);
+  });
+  Promise.all(resultArray).then((links) => {
+    let brokenCodes = []
+    links.forEach((validate) => {
+      let getCodes = validate.validate.code;
+      if (getCodes === undefined || getCodes >= 400 && getCodes <= 599) {
+        brokenCodes.push(getCodes);
+      }
+    });
+    totalWithStatsAndValidate = optionStats(array, brokenCodes.length)
+    resolve(totalWithStatsAndValidate);
+  });
+}
+
 // module.exports = mdLinks;
 
-mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
+mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado')
   .then((links) => {
     console.log(links);
   })
