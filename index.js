@@ -9,10 +9,10 @@ const mdLinks = (file, options) => {
   return new Promise((resolve, reject) => {
     try {
       getAllLinks(file, op).then((allLinks) => {
-        if (op.validate) {
+        if (op.stats) {
+          statsWithOrWithoutValidate(allLinks, op, resolve);
+        } else if (op.validate) {
           optionValidate(allLinks, resolve);
-        } else if (op.stats) {
-          resolve(optionStats(allLinks))
         } else {
           resolve(allLinks);
         }
@@ -113,10 +113,13 @@ const validateLink = (objLink) => {
   })
 }
 
-const optionStats = (arrayWithAllLinks) => {
+const optionStats = (arrayWithAllLinks, addValidate) => {
   const totalLinks = arrayWithAllLinks.length;
   const totalDuplicates = findDuplicateLinks(arrayWithAllLinks).length;
   const uniqueLinks = totalLinks - totalDuplicates;
+  if (addValidate) {
+    return { Total: totalLinks, Unique: uniqueLinks, Broken: addValidate }
+  }
   return { Total: totalLinks, Unique: uniqueLinks }
 }
 
@@ -137,9 +140,31 @@ const findDuplicateLinks = (arrayLinks) => {
   return result;
 }
 
+const statsWithOrWithoutValidate = (arrayWithAllLinks, op, resolve) => {
+  if (op.validate) {
+    let totalWithStatsAndValidate = '';
+    let resultArray = arrayWithAllLinks.map((eachObjLink) => {
+      return validateLink(eachObjLink);
+    });
+    Promise.all(resultArray).then((links) => {
+      let brokenCodes = []
+      links.forEach((validate) => {
+        let getCodes = validate.validate.code;
+        if (getCodes === undefined || getCodes >= 400 && getCodes <= 599) {
+          brokenCodes.push(getCodes);
+        }
+      });
+      totalWithStatsAndValidate = optionStats(arrayWithAllLinks, brokenCodes.length)
+      resolve(totalWithStatsAndValidate);
+    });
+    return totalWithStatsAndValidate;
+  }
+  resolve(optionStats(arrayWithAllLinks))
+}
+
 // module.exports = mdLinks;
 
-mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado', { stats: true })
+mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado')
   .then((links) => {
     console.log(links);
   })
