@@ -6,10 +6,16 @@ const https = require('https');
 const mdLinks = (file, options) => {
   let op = { validade: false, stats: false };
   Object.assign(op, options);
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       getAllLinks(file, op).then((allLinks) => {
-        resolve(allLinks);
+        if (op.validate) {
+          optionValidate(allLinks, resolve);
+        } else if (op.stats) {
+          resolve(optionStats(allLinks))
+        } else {
+          resolve(allLinks);
+        }
       });
     } catch (err) {
       reject(err);
@@ -25,7 +31,7 @@ const getAllLinks = (file, op) => {
       } else if (stats.isDirectory()) {
         resolveDirectory(file, op, resolve, reject);
       } else {
-        resolveFile(file, op, resolve, reject);
+        resolveFile(file, resolve, reject);
       }
     });
   });
@@ -49,7 +55,7 @@ const resolveDirectory = (file, op, resolve, reject) => {
 
 const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
 
-const resolveFile = (file, op, resolve, reject) => {
+const resolveFile = (file, resolve, reject) => {
   fs.readFile(file, 'utf8', (errReadFile, data) => {
     let arrayLinks = [];
     if (errReadFile) {
@@ -58,10 +64,6 @@ const resolveFile = (file, op, resolve, reject) => {
       let filterRegex = data.match(regexMdLinks);
       if (filterRegex) {
         creatingArrayOfLinksInformation(filterRegex, arrayLinks, file);
-        if (op.validate) {
-          optionValidate(arrayLinks, resolve);
-          return;
-        }
       }
     }
     resolve(arrayLinks);
@@ -111,9 +113,33 @@ const validateLink = (objLink) => {
   })
 }
 
+const optionStats = (arrayWithAllLinks) => {
+  const totalLinks = arrayWithAllLinks.length;
+  const totalDuplicates = findDuplicateLinks(arrayWithAllLinks).length;
+  const uniqueLinks = totalLinks - totalDuplicates;
+  return { Total: totalLinks, Unique: uniqueLinks }
+}
+
+const findDuplicateLinks = (arrayLinks) => {
+  let object = {};
+  let result = [];
+  arrayLinks.forEach((item) => {
+    if (!object[item.href]) {
+      object[item.href] = 0;
+    }
+    object[item.href] += 1;
+  });
+  for (var prop in object) {
+    if (object[prop] >= 2) {
+      result.push(prop);
+    }
+  }
+  return result;
+}
+
 // module.exports = mdLinks;
 
-mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado', {validate:true})
+mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado', { stats: true })
   .then((links) => {
     console.log(links);
   })
