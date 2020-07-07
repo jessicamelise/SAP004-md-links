@@ -6,10 +6,16 @@ const https = require('https');
 const mdLinks = (file, options) => {
   let op = { validade: false, stats: false };
   Object.assign(op, options);
-  return new Promise ((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       getAllLinks(file, op).then((allLinks) => {
-        resolve(allLinks);
+        if (op.stats) {
+          statsWithOrWithoutValidate(allLinks, op, resolve);
+        } else if (op.validate) {
+          optionValidate(allLinks, resolve);
+        } else {
+          resolve(allLinks);
+        }
       });
     } catch (err) {
       reject(err);
@@ -25,7 +31,7 @@ const getAllLinks = (file, op) => {
       } else if (stats.isDirectory()) {
         resolveDirectory(file, op, resolve, reject);
       } else {
-        resolveFile(file, op, resolve, reject);
+        resolveFile(file, resolve, reject);
       }
     });
   });
@@ -35,7 +41,7 @@ const resolveDirectory = (file, op, resolve, reject) => {
   fs.readdir(file, 'utf-8', (errDir, files) => {
     if (!errDir) {
       let arrayMdlinks = files.map((archive) => {
-        return getAllLinks(`${file}\\${archive}`, op);
+        return getAllLinks(`${file}/${archive}`, op);
       })
       Promise.all(arrayMdlinks).then((objectList) => {
         const list = objectList.flat();
@@ -49,7 +55,7 @@ const resolveDirectory = (file, op, resolve, reject) => {
 
 const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
 
-const resolveFile = (file, op, resolve, reject) => {
+const resolveFile = (file, resolve, reject) => {
   fs.readFile(file, 'utf8', (errReadFile, data) => {
     let arrayLinks = [];
     if (errReadFile) {
@@ -58,10 +64,6 @@ const resolveFile = (file, op, resolve, reject) => {
       let filterRegex = data.match(regexMdLinks);
       if (filterRegex) {
         creatingArrayOfLinksInformation(filterRegex, arrayLinks, file);
-        if (op.validate) {
-          optionValidate(arrayLinks, resolve);
-          return;
-        }
       }
     }
     resolve(arrayLinks);
@@ -111,9 +113,61 @@ const validateLink = (objLink) => {
   })
 }
 
-// module.exports = mdLinks;
+const optionStats = (arrayWithAllLinks, addValidate) => {
+  const totalLinks = arrayWithAllLinks.length;
+  const totalDuplicates = findDuplicateLinks(arrayWithAllLinks).length;
+  const uniqueLinks = totalLinks - totalDuplicates;
+  if (addValidate) {
+    return { Total: totalLinks, Unique: uniqueLinks, Broken: addValidate }
+  }
+  return { Total: totalLinks, Unique: uniqueLinks }
+}
 
-mdLinks('C:\\Users\\jessi\\Documents\\Programacao\\Javascript\\Testes\\teste-controlado', {validate:true})
-  .then((links) => {
-    console.log(links);
-  })
+const findDuplicateLinks = (arrayLinks) => {
+  let object = {};
+  let result = [];
+  arrayLinks.forEach((item) => {
+    if (!object[item.href]) {
+      object[item.href] = 0;
+    }
+    object[item.href] += 1;
+  });
+  for (var prop in object) {
+    if (object[prop] >= 2) {
+      result.push(prop);
+    }
+  }
+  return result;
+}
+
+const statsWithOrWithoutValidate = (arrayWithAllLinks, op, resolve) => {
+  if (op.validate) {
+    return optionValidadeWithStats(arrayWithAllLinks, resolve);
+  }
+  resolve(optionStats(arrayWithAllLinks))
+}
+
+const optionValidadeWithStats = (array, resolve) => {
+  let totalWithStatsAndValidate = '';
+  let resultArray = array.map((eachObjLink) => {
+    return validateLink(eachObjLink);
+  });
+  Promise.all(resultArray).then((links) => {
+    let brokenCodes = []
+    links.forEach((validate) => {
+      let getCodes = validate.validate.code;
+      if (!getCodes || getCodes >= 400 && getCodes <= 599) {
+        brokenCodes.push(getCodes);
+      }
+    });
+    totalWithStatsAndValidate = optionStats(array, brokenCodes.length)
+    resolve(totalWithStatsAndValidate);
+  });
+}
+
+module.exports = mdLinks;
+
+// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado', {stats:true, validate:true})
+//   .then((links) => {
+//     console.log(links);
+//   })
