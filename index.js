@@ -156,7 +156,7 @@ const optionValidadeWithStats = (array, resolve) => {
     let brokenCodes = []
     links.forEach((validate) => {
       let getCodes = validate.validate.code;
-      if (getCodes === undefined || getCodes >= 400 && getCodes <= 599) {
+      if (!getCodes || getCodes >= 400 && getCodes <= 599) {
         brokenCodes.push(getCodes);
       }
     });
@@ -165,9 +165,9 @@ const optionValidadeWithStats = (array, resolve) => {
   });
 }
 
-// module.exports = mdLinks;
+module.exports = mdLinks;
 
-mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado')
-  .then((links) => {
-    console.log(links);
-  })
+// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado', {stats:true, validate:true})
+//   .then((links) => {
+//     console.log(links);
+//   })
