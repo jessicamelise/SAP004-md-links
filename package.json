@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Biblioteca que irá retornar todos os links dentro de um arquivo tipo .md",
   "main": "index.js",
+  "bin": {
+    "md-links": "./cli.js"
+  },
   "directories": {
     "test": "test"
   },
