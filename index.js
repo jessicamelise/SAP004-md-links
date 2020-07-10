@@ -169,7 +169,7 @@ const optionValidateWithStats = (array, resolve, reject) => {
   }).catch(e=> reject(e));
 }
 
-// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado/test/read')
+// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado/test/read', {validate:true})
 //   .then((links) => {
 //     console.log(links);
 //   }).catch(err=>console.log(err))
