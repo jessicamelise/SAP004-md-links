@@ -16,16 +16,16 @@ describe('mdLinks', () => {
     mocks.mockHttp();
   });
 
-  // test('should be a function', () => {
-  //   expect(typeof mdLinks).toBe('function');
-  // });
+  test('should be a function', () => {
+    expect(typeof mdLinks).toBe('function');
+  });
 
-  // test('should return all links of the directory', () => {
-  //     return mdLinks('./test/dir-test').then((links) => {
-  //     const result = links.length;
-  //     expect(result).toEqual(8);
-  //   });
-  // });
+  test('should return all links of the directory', () => {
+      return mdLinks('./test/dir-test').then((links) => {
+      const result = links.length;
+      expect(result).toEqual(8);
+    });
+  });
 
   // test('should return error for wrong files', () => {
   //   expect.assertions(1);

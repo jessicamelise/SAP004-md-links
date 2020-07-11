@@ -1,5 +1,6 @@
 const https = require('https');
 const http = require('http');
+const fs = require('fs');
 
 const mocks = {
   mockHttps: () => {
@@ -37,6 +38,18 @@ const mocks = {
       } 
       return { on: () => {}}; 
     })
+  },
+  mockFsStat: () => {
+    fs.stat.mockImplementation(file, callback => {
+      callback(undefined, )
+      // if (errFile) {
+      //   reject(errFile.message);
+      // } else if (stats.isDirectory()) {
+      //   resolveDirectory(file, op, resolve, reject);
+      // } else {
+      //   resolveFile(file, resolve, reject);
+      // }
+    });
   },
 }
 
