@@ -45,7 +45,7 @@ E oferece a seguinte interface:
 * `path`: Rota do arquivo ou diretório.
 * `options`: Um objeto com as seguintes propriedades:
   - `validate`: Um booleano que determina se deseja validar os links encontrados.
-  - `stats`: Um booleano que determina a quantidade total de links.
+  - `stats`: Um booleano que determina que o retorno será apenas a quantidade total de links.
 
 ### Valor de retorno com require
 
