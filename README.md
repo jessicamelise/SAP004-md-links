@@ -5,7 +5,8 @@
 * [1. A Biblioteca md-links](#1-a-biblioteca-md-links)
 * [2. Ferramentas e Bibliotecas Utilizadas](#2-ferramentas-e-bibliotecas-utilizadas)
 * [3. Guia de instalação](#3-guia-de-instalação)
-* [4. Autor](#4-autor)
+* [4. Implementações Futuras](#4-implementações-futuras)
+* [5. Autora](#5-autora)
 
 ***
 
@@ -175,6 +176,15 @@ mdLinks("./dir/archive.md", { stats: true, validate: true })
   .catch(err => console.log(err));
 ```
 
-## 4. Autor
+## 4. Implementações Futuras
+
+* Implementar o filtro de links para não aceitar links de # e www;
+* Acrescentar limite de 50 caracteres para o texto encontrado dentro do link;
+* Adicionar a biblioteca [Chalk](https://github.com/chalk/chalk) para trazer informações coloridas;
+* Adicionar mais testes que tratam os erros;
+* Adicionar o número da linha onde se encontra o link;
+
+## 5. Autora
+
 Biblioteca desenvolvida por [Jéssica Melise](https://github.com/jessicamelise), como o quarto
-projeto do Bootcamp da [Laboratória](https://github.com/Laboratoria).
+projeto do Bootcamp da [Laboratória](https://github.com/Laboratoria), turma SAP004.
