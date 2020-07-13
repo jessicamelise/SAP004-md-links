@@ -175,6 +175,8 @@ mdLinks("./dir/archive.md", { stats: true, validate: true })
   })
   .catch(err => console.log(err));
 ```
+##### Para verificar suas intalações utilize: `npm ls -g --depth=0`
+##### Para desinstalar o md-links use o comando: `npm uninstall -g md-links`
 
 ## 4. Implementações Futuras
 
