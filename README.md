@@ -5,11 +5,7 @@
 * [1. A Biblioteca md-links](#1-a-biblioteca-md-links)
 * [2. Ferramentas e Bibliotecas Utilizadas](#2-ferramentas-e-bibliotecas-utilizadas)
 * [3. Guia de instalação](#3-guia-de-instalação)
-* [5. Critérios de aceitação mínimos do projeto](#5-criterios-de-aceitação-mínimos-do-projeto)
-* [6. Entregáveis](#6-entregáveis)
-* [7. Hacker edition](#7-hacker-edition)
-* [8. Guias, dicas e leituras complementares](#8-guias-dicas-e-leituras-complementares)
-* [9. Checklist](#9-checklist)
+* [4. Autor](#4-autor)
 
 ***
 
@@ -41,9 +37,9 @@ para verificar os arquivos que contenham links e mostrar algumas estatísticas.
 
 ## 3. Guia de Instalação
 
-* Essa biblioteca deve ser instalada via `npm install jessicamelise/SAP004-md-links`.
+Essa biblioteca deve ser instalada via `npm install -g jessicamelise/SAP004-md-links`.
 
-* E oferece a seguinte interface:
+E oferece a seguinte interface:
 
 ### `mdLinks(path, options)`
 
@@ -52,7 +48,7 @@ para verificar os arquivos que contenham links e mostrar algumas estatísticas.
   - `validate`: Um booleano que determina se deseja validar os links encontrados.
   - `stats`: Um booleano que determina a quantidade total de links.
 
-#### Valor de retorno com require
+### Valor de retorno com require
 
 Quando a função mdLinks é chamada passando somente o parametro de path, teremos o seguinte retorno:
 
@@ -111,7 +107,7 @@ Se usarmos a mdLinks com o paramatro path e mais o options com o valor de stats 
 
 * { Total: 'número total de links', Unique: 'número de links não repetidos', Broken: 'número de links quebrados' }.
 
-Pr exemplo:
+Por exemplo:
 
 ```js
 const mdLinks = require("md-links");
@@ -123,7 +119,7 @@ mdLinks("./some/example.md", { stats: true, validate: true })
   .catch(console.error);
 ```
 
-#### Valor de Retorno com CLI (Command Line Interface - Interface de Linha de Comando)
+### Valor de Retorno com CLI (Command Line Interface - Interface de Linha de Comando)
 
 Também pode ser executado da seguinte maneira através do terminal:
 
@@ -180,3 +176,6 @@ E com os options `--stats` e `--validate`, temos:
 $ md-links ./some/example.md --stats
 { Total: 10, Unique: 6, Broken: 3 }
 ```
+## 4. Autor
+Biblioteca desenvolvida por [Jéssica Melise](https://github.com/jessicamelise), como o quarto
+projeto do Bootcamp da [Laboratória](https://github.com/Laboratoria).
