@@ -12,8 +12,7 @@
 ## 1. A Biblioteca md-links
 
 A biblioteca md-links lê e analisa arquivos no formato [Markdown](https://pt.wikipedia.org/wiki/Markdown),
-que é uma linguagem de marcação muito popular entre os programadores (como por exemplo o `README.md`),
-para verificar os arquivos que contenham links e mostrar algumas estatísticas.
+para verificar se contém links e mostrar algumas estatísticas.
 
 ## 2. Ferramentas e Bibliotecas Utilizadas
 
@@ -123,7 +122,7 @@ mdLinks("./some/example.md", { stats: true, validate: true })
 
 Também pode ser executado da seguinte maneira através do terminal:
 
-`md-links <path-to-file> [options]`
+### `md-links <path-to-file> [options]`
 
 Se passar somente o arquivo ou diretório, teremos a seguinte estrutura:
 
