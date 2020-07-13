@@ -122,12 +122,12 @@ const validateLink = (objLink) => {
   });
 }
 
-const optionStats = (arrayWithAllLinks, addValidate) => {
+const optionStats = (arrayWithAllLinks, op, addValidate) => {
   const totalLinks = arrayWithAllLinks.length;
   const totalDuplicates = findDuplicateLinks(arrayWithAllLinks).length;
   const uniqueLinks = totalLinks - totalDuplicates;
-  if (addValidate) {
-    return { Total: totalLinks, Unique: uniqueLinks, Broken: addValidate }
+  if (op.validate) {
+    return { Total: totalLinks, Unique: uniqueLinks, Broken: addValidate };
   }
   return { Total: totalLinks, Unique: uniqueLinks }
 }
@@ -151,32 +151,27 @@ const findDuplicateLinks = (arrayLinks) => {
 
 const statsWithOrWithoutValidate = (arrayWithAllLinks, op, resolve, reject) => {
   if (op.validate) {
-    return optionValidateWithStats(arrayWithAllLinks, resolve, reject);
+    return optionValidateWithStats(arrayWithAllLinks, op, resolve, reject);
   }
-  resolve(optionStats(arrayWithAllLinks))
+  resolve(optionStats(arrayWithAllLinks, op))
 }
 
-const optionValidateWithStats = (array, resolve, reject) => {
+const optionValidateWithStats = (array, op, resolve, reject) => {
   let totalWithStatsAndValidate = '';
   let resultArray = array.map((eachObjLink) => {
     return validateLink(eachObjLink);
   });
   Promise.all(resultArray).then((links) => {
-    let brokenCodes = []
+    let brokenCodes = [];
     links.forEach((validate) => {
       let getCodes = validate.validate.code;
       if (!getCodes || getCodes >= 400 && getCodes <= 599) {
         brokenCodes.push(getCodes);
       }
     });
-    totalWithStatsAndValidate = optionStats(array, brokenCodes.length)
+    totalWithStatsAndValidate = optionStats(array, op, brokenCodes.length)
     resolve(totalWithStatsAndValidate);
   }).catch(e=> reject(e));
 }
-
-// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Laboratoria efetivo/SAP004-md-links/test/dir-test')
-//   .then((links) => {
-//     console.log(links);
-//   }).catch(err=>console.log(err))
 
 module.exports = mdLinks;
