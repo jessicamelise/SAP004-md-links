@@ -40,12 +40,69 @@ Essa biblioteca deve ser instalada via `npm install -g jessicamelise/SAP004-md-l
 
 E oferece a seguinte interface:
 
-### `mdLinks(path, options)`
+### Require: `mdLinks(path, options)`
+### CLI: `md-links <path-to-file> [options]`
 
 * `path`: Rota do arquivo ou diretório.
 * `options`: Um objeto com as seguintes propriedades:
   - `validate`: Um booleano que determina se deseja validar os links encontrados.
   - `stats`: Um booleano que determina que o retorno será apenas a quantidade total de links.
+
+### Valor de Retorno com CLI (Command Line Interface - Interface de Linha de Comando)
+
+Também pode ser executado da seguinte maneira através do terminal:
+
+Se passar somente o arquivo ou diretório, teremos a seguinte estrutura:
+
+```sh
+$ md-links './some/example.md'
+[
+  {
+    text: Nome da página,
+    href: https://link-dessa-página.com,
+    file: ./some/example.md
+  },
+  {
+    text: Nome de outra página,
+    href: https://link-dessa-outra-página.com,
+    file: ./some/example.md
+  }
+]
+```
+
+Com o options `--validate`, veremos o seguinte:
+
+```sh
+$ md-links './some/example.md' --validate
+[
+  {
+    text: Nome da página,
+    href: https://link-dessa-página.com,
+    file: ./some/example.md,
+    validate: { code: 200, message: 'OK' }
+  },
+  {
+    text: Nome de outra página,
+    href: https://link-dessa-outra-página.com,
+    file: ./some/example.md,
+    validate: { 'Got error: message' }
+  }
+]
+```
+
+Com o options `--stats`, veremos o seguinte:
+
+```sh
+$ md-links './some/example.md' --stats
+{ Total: 10, Unique: 6 }
+```
+
+E com os options `--stats` e `--validate`, temos:
+
+```sh
+$ md-links './some/example.md' --stats --validate
+{ Total: 10, Unique: 6, Broken: 3 }
+```
 
 ### Valor de retorno com require
 
@@ -118,63 +175,6 @@ mdLinks("./some/example.md", { stats: true, validate: true })
   .catch(console.error);
 ```
 
-### Valor de Retorno com CLI (Command Line Interface - Interface de Linha de Comando)
-
-Também pode ser executado da seguinte maneira através do terminal:
-
-### `md-links <path-to-file> [options]`
-
-Se passar somente o arquivo ou diretório, teremos a seguinte estrutura:
-
-```sh
-$ md-links './some/example.md'
-[
-  {
-    text: Nome da página,
-    href: https://link-dessa-página.com,
-    file: ./some/example.md
-  },
-  {
-    text: Nome de outra página,
-    href: https://link-dessa-outra-página.com,
-    file: ./some/example.md
-  }
-]
-```
-
-Com o options `--validate`, veremos o seguinte:
-
-```sh
-$ md-links './some/example.md' --validate
-[
-  {
-    text: Nome da página,
-    href: https://link-dessa-página.com,
-    file: ./some/example.md,
-    validate: { code: 200, message: 'OK' }
-  },
-  {
-    text: Nome de outra página,
-    href: https://link-dessa-outra-página.com,
-    file: ./some/example.md,
-    validate: { 'Got error: message' }
-  }
-]
-```
-
-Com o options `--stats`, veremos o seguinte:
-
-```sh
-$ md-links './some/example.md' --stats
-{ Total: 10, Unique: 6 }
-```
-
-E com os options `--stats` e `--validate`, temos:
-
-```sh
-$ md-links './some/example.md' --stats --validate
-{ Total: 10, Unique: 6, Broken: 3 }
-```
 ## 4. Autor
 Biblioteca desenvolvida por [Jéssica Melise](https://github.com/jessicamelise), como o quarto
 projeto do Bootcamp da [Laboratória](https://github.com/Laboratoria).
