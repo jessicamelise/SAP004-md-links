@@ -20,7 +20,6 @@ para verificar se contém links e mostrar algumas estatísticas.
 * Vanilla JS.
 * [Node.js](https://nodejs.org/pt-br/).
 * [NPM](https://www.npmjs.com/).
-* [Fluxograma](https://app.diagrams.net/).
 * [expressões regulares (`RegExp`)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Regular_Expressions).
 * [Node.js File System](https://nodejs.org/api/fs.html).
 * [Node.js Path](https://nodejs.org/api/path.html/).
