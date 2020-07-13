@@ -6,9 +6,6 @@
   "bin": {
     "md-links": "./cli.js"
   },
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "npm run eslint && jest --verbose --coverage",
     "eslint": "eslint --ext .js test/"

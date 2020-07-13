@@ -73,8 +73,7 @@ const resolveFile = (file, resolve, reject) => {
     });
   } else {
     resolve([]);
-  }
-  
+  } 
 }
 
 const creatingArrayOfLinksInformation = (filteredValue, array, file) => {
@@ -141,7 +140,7 @@ const findDuplicateLinks = (arrayLinks) => {
     }
     object[item.href] += 1;
   });
-  for (var prop in object) {
+  for (let prop in object) {
     if (object[prop] >= 2) {
       result.push(prop);
     }
@@ -153,7 +152,7 @@ const statsWithOrWithoutValidate = (arrayWithAllLinks, op, resolve, reject) => {
   if (op.validate) {
     return optionValidateWithStats(arrayWithAllLinks, op, resolve, reject);
   }
-  resolve(optionStats(arrayWithAllLinks, op))
+  resolve(optionStats(arrayWithAllLinks, op));
 }
 
 const optionValidateWithStats = (array, op, resolve, reject) => {
@@ -169,7 +168,7 @@ const optionValidateWithStats = (array, op, resolve, reject) => {
         brokenCodes.push(getCodes);
       }
     });
-    totalWithStatsAndValidate = optionStats(array, op, brokenCodes.length)
+    totalWithStatsAndValidate = optionStats(array, op, brokenCodes.length);
     resolve(totalWithStatsAndValidate);
   }).catch(e=> reject(e));
 }

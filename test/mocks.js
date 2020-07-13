@@ -16,12 +16,12 @@ const mocks = {
           }
         }
       } else if (url === 'https://img.youtube.com/vi/f0zL6Ot9y_w/0.jpg') {
-        callback({ statusCode: 500, statusMessage: 'server error' })
+        callback({ statusCode: 500, statusMessage: 'server error' });
       } else {
-        callback({ statusCode: 200, statusMessage: 'Ok' })
+        callback({ statusCode: 200, statusMessage: 'Ok' });
       }
       return { on: () => { } };
-    })
+    });
   },
   mockHttp: () => {
     http.get.mockImplementation((url, callback) => {
@@ -34,12 +34,12 @@ const mocks = {
           }
         }
       } else if (url === 'http://img.youtube.com/vi/f0zL6Ot9y_w/0.jpg') {
-        callback({ statusCode: 500, statusMessage: 'server error' })
+        callback({ statusCode: 500, statusMessage: 'server error' });
       } else {
-        callback({ statusCode: 200, statusMessage: 'Ok' })
+        callback({ statusCode: 200, statusMessage: 'Ok' });
       }
       return { on: () => { } };
-    })
+    });
   },
   mockFsStat: () => {
     fs.stat.mockImplementation((file, callback) => {

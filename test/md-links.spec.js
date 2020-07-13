@@ -8,7 +8,6 @@ jest.mock('fs');
 jest.mock('http');
 jest.mock('https');
 
-
 describe('mdLinks', () => {
 
   beforeEach(() => {
