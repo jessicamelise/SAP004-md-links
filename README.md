@@ -43,7 +43,7 @@ E oferece a seguinte interface:
 ### Require: `mdLinks(path, options)`
 ### CLI: `md-links <path-to-file> [options]`
 
-* `path`: Rota do arquivo ou diretório.
+* `path`: Rota do diretório ou do arquivo md direto.
 * `options`: Um objeto com as seguintes propriedades:
   - `validate`: Um booleano que determina se deseja validar os links encontrados.
   - `stats`: Um booleano que determina que o retorno será apenas a quantidade total de links.
@@ -55,7 +55,7 @@ Também pode ser executado da seguinte maneira através do terminal:
 Se passar somente o arquivo ou diretório, teremos a seguinte estrutura:
 
 ```sh
-$ md-links './some/example.md'
+$ md-links './dir/archive.md'
 [
   {
     text: Nome da página,
@@ -73,7 +73,7 @@ $ md-links './some/example.md'
 Com o options `--validate`, veremos o seguinte:
 
 ```sh
-$ md-links './some/example.md' --validate
+$ md-links './dir/archive.md' --validate
 [
   {
     text: Nome da página,
@@ -93,14 +93,14 @@ $ md-links './some/example.md' --validate
 Com o options `--stats`, veremos o seguinte:
 
 ```sh
-$ md-links './some/example.md' --stats
+$ md-links './dir/archive.md' --stats
 { Total: 10, Unique: 6 }
 ```
 
 E com os options `--stats` e `--validate`, temos:
 
 ```sh
-$ md-links './some/example.md' --stats --validate
+$ md-links './dir/archive.md' --stats --validate
 { Total: 10, Unique: 6, Broken: 3 }
 ```
 
@@ -117,11 +117,11 @@ Por exemplo:
 ```js
 const mdLinks = require("md-links");
 
-mdLinks("./some/example.md")
+mdLinks("./dir/archive.md")
   .then(links => {
     // => [{ href, text, file }]
   })
-  .catch(console.error);
+  .catch(err => console.log(err));
 ```
 
 Se usarmos a mdLinks com o paramatro path e mais o options com o valor de validate = true, teremos o seguinte:
@@ -136,11 +136,11 @@ Por exemplo:
 ```js
 const mdLinks = require("md-links");
 
-mdLinks("./some/example.md", { validate: true })
+mdLinks("./dir/archive.md", { validate: true })
   .then(links => {
     // => [{ href, text, file, validate: { status, ok } }]
   })
-  .catch(console.error);
+  .catch(err => console.log(err));
 ```
 
 Se usarmos a mdLinks com o paramatro path e mais o options com o valor de stats = true, teremos o seguinte:
@@ -152,11 +152,11 @@ Por exemplo:
 ```js
 const mdLinks = require("md-links");
 
-mdLinks("./some/example.md", { stats: true })
+mdLinks("./dir/archive.md", { stats: true })
   .then(links => {
     // => { Total: 10, Unique: 6 }
   })
-  .catch(console.error);
+  .catch(err => console.log(err));
 ```
 
 Se usarmos a mdLinks com o paramatro path e mais o options com o valor de stats e validate = true, teremos o seguinte:
@@ -168,11 +168,11 @@ Por exemplo:
 ```js
 const mdLinks = require("md-links");
 
-mdLinks("./some/example.md", { stats: true, validate: true })
+mdLinks("./dir/archive.md", { stats: true, validate: true })
   .then(links => {
     // => { Total: 10, Unique: 6, Broken: 3 }
   })
-  .catch(console.error);
+  .catch(err => console.log(err));
 ```
 
 ## 4. Autor
