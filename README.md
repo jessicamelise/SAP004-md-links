@@ -145,7 +145,7 @@ $ md-links './some/example.md'
 Com o options `--validate`, veremos o seguinte:
 
 ```sh
-$ md-links './some/example.md'
+$ md-links './some/example.md' --validate
 [
   {
     text: Nome da página,
@@ -165,14 +165,14 @@ $ md-links './some/example.md'
 Com o options `--stats`, veremos o seguinte:
 
 ```sh
-$ md-links ./some/example.md --stats
+$ md-links './some/example.md' --stats
 { Total: 10, Unique: 6 }
 ```
 
 E com os options `--stats` e `--validate`, temos:
 
 ```sh
-$ md-links ./some/example.md --stats
+$ md-links './some/example.md' --stats --validate
 { Total: 10, Unique: 6, Broken: 3 }
 ```
 ## 4. Autor
