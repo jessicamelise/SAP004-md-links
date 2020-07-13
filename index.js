@@ -56,20 +56,25 @@ const resolveDirectory = (file, op, resolve, reject) => {
 const regexMdLinks = /\[([^\]]*)\]\(([^\)]*)\)/gm;
 
 const resolveFile = (file, resolve, reject) => {
-  fs.readFile(file, 'utf8', (errReadFile, data) => {
-    try {
-      let arrayLinks = [];
-    if (errReadFile) {
-      reject(errReadFile.message);
-    } else if (path.extname(file) === '.md') {
-      let filterRegex = data.match(regexMdLinks);
-      if (filterRegex) {
-        creatingArrayOfLinksInformation(filterRegex, arrayLinks, file);
+  if (path.extname(file) === '.md') {
+    fs.readFile(file, 'utf8', (errReadFile, data) => {
+      try {
+        let arrayLinks = [];
+      if (errReadFile) {
+        reject(errReadFile.message);
+      } else {
+        let filterRegex = data.match(regexMdLinks);
+        if (filterRegex) {
+          creatingArrayOfLinksInformation(filterRegex, arrayLinks, file);
+        }
       }
-    }
-    resolve(arrayLinks);
-    } catch (err) { reject(err) };
-  });
+      resolve(arrayLinks);
+      } catch (err) { reject(err) };
+    });
+  } else {
+    resolve([]);
+  }
+  
 }
 
 const creatingArrayOfLinksInformation = (filteredValue, array, file) => {
@@ -169,7 +174,7 @@ const optionValidateWithStats = (array, resolve, reject) => {
   }).catch(e=> reject(e));
 }
 
-// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Testes/teste-controlado/test/read', {validate:true})
+// mdLinks('C:/Users/jessi/Documents/Programacao/Javascript/Laboratoria efetivo/SAP004-md-links/test/dir-test')
 //   .then((links) => {
 //     console.log(links);
 //   }).catch(err=>console.log(err))
